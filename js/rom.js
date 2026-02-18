@@ -1,40 +1,71 @@
 import { Utils } from './utils.js';
-import { PokeText } from './text.js';
+import { LZ77 } from './lz77.js';
 
 export class RomHandler {
     constructor() {
         this.data = null;
-        this.filename = "rom.gba";
         this.gameCode = "";
     }
 
-    load(arrayBuffer, name) {
+    load(arrayBuffer) {
         this.data = new Uint8Array(arrayBuffer);
-        this.filename = name;
-        this.detectGame();
+        const codeBytes = this.data.subarray(0xAC, 0xB0);
+        this.gameCode = String.fromCharCode(...codeBytes);
     }
 
-    detectGame() {
-        // Read Game Code at 0xAC
-        let code = "";
-        for(let i=0xAC; i<0xB0; i++) code += String.fromCharCode(this.data[i]);
-        this.gameCode = code;
+    // --- SPRITE LOGIC ---
+    
+    getSpritePointers() {
+        // Addresses for the "Front Sprite Table" and "Normal Palette Table"
+        if (this.gameCode === "BPRE") { // FireRed
+            return { sprites: 0x2350AC, palettes: 0x23730C };
+        }
+        if (this.gameCode === "BPEE") { // Emerald
+            return { sprites: 0x32FC48, palettes: 0x32FD2C };
+        }
+        return null;
     }
 
-    // Get bookmarks based on detected game
-    getBookmarks() {
-        // BPRE = FireRed (US), BPEE = Emerald (US)
-        if (this.gameCode === "BPRE") {
-            return {
-                "Header": 0x0000A0,
-                "Pokemon Names": 0x245EE0,
-                "Move Names": 0x247094,
-                "Item Data": 0x3DB028,
-                "Wild Pokemon (Route 1)": 0x3C9CB8, 
-                "Starters Script": 0x169BB0
-            };
-        } else if (this.gameCode === "BPEE") {
-            return {
+    getPokemonSprite(id) {
+        if (!this.data) return null;
+        const tables = this.getSpritePointers();
+        if (!tables) return null;
+
+        // 1. Get Sprite Graphics
+        // The table is an array of 8-byte entries. 
+        // We want the Pointer (first 4 bytes).
+        const spriteTableEntry = tables.sprites + (id * 8);
+        const spritePtr = Utils.readU32(this.data, spriteTableEntry);
+        const spriteOffset = spritePtr & 0x01FFFFFF; // Remove 08 prefix
+
+        // 2. Get Palette
+        // Table is array of 8-byte entries too.
+        const palTableEntry = tables.palettes + (id * 8);
+        const palPtr = Utils.readU32(this.data, palTableEntry);
+        const palOffset = palPtr & 0x01FFFFFF;
+
+        // 3. Decompress
+        // Both graphics and palettes are LZ77 compressed in Gen 3
+        const tiles = LZ77.decompress(this.data, spriteOffset);
+        const rawPal = LZ77.decompress(this.data, palOffset);
+
+        if (!tiles || !rawPal) return null;
+
+        // 4. Convert Palette to standard array of uint16
+        const palette = [];
+        for (let i = 0; i < rawPal.length; i += 2) {
+            palette.push(rawPal[i] | (rawPal[i+1] << 8));
+        }
+
+        return { tiles, palette };
+    }
+
+    // ... (Keep existing readBytes/writeByte/find methods from previous versions) ...
+    
+    readBytes(offset, len) { return this.data.subarray(offset, offset + len); }
+    writeByte(offset, val) { this.data[offset] = val; }
+    download() { /* ... existing download logic ... */ }
+}            return {
                 "Header": 0x0000A0,
                 "Pokemon Names": 0x317F98,
                 "Move Names": 0x31977C,
