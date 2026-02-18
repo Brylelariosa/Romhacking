@@ -1,0 +1,116 @@
+:root {
+    --bg-dark: #1e1e1e;
+    --bg-panel: #252526;
+    --accent: #007acc;
+    --text-main: #d4d4d4;
+    --text-dim: #858585;
+    --hex-hover: #2a2d2e;
+}
+
+body {
+    margin: 0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.toolbar {
+    background-color: #333333;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid #000;
+}
+
+button {
+    background-color: var(--accent);
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.hidden { display: none; }
+
+.workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--bg-panel);
+    padding: 15px;
+    border-right: 1px solid #000;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.hex-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.hex-header {
+    display: grid;
+    grid-template-columns: 80px 1fr 150px;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 5px;
+    padding-right: 18px; /* Scrollbar offset */
+}
+
+.hex-grid {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.hex-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 150px;
+}
+
+.hex-row:hover { background-color: var(--hex-hover); }
+
+.offset-label { color: var(--accent); }
+
+.bytes span {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.bytes span:hover {
+    background-color: white;
+    color: black;
+}
+
+.ascii { color: var(--text-dim); letter-spacing: 2px; }
