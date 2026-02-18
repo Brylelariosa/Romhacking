@@ -3,43 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebHexManiac Lite</title>
+    <title>WebHexManiac Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="app-container">
         <header class="toolbar">
-            <div class="brand">WebHexManiac</div>
-            <input type="file" id="fileInput" accept=".gba" class="hidden">
-            <button id="btnLoad">Open ROM</button>
-            <button id="btnSave" disabled>Save ROM</button>
-            <span id="statusText">No ROM loaded</span>
+            <div class="brand">HMA Web</div>
+            <div class="file-controls">
+                <input type="file" id="fileInput" accept=".gba" class="hidden">
+                <button id="btnLoad">📂 Open</button>
+                <button id="btnSave" disabled>💾 Save</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search Hex (e.g. 00 A2 FF)">
+                <button id="btnSearch">🔍</button>
+            </div>
         </header>
 
         <div class="workspace">
             <aside class="sidebar">
-                <h3>ROM Info</h3>
-                <div id="romInfo">
-                    <p>Load a ROM to see details.</p>
+                <div class="panel">
+                    <h3>Navigation</h3>
+                    <div class="input-group">
+                        <label>Go to Offset:</label>
+                        <div class="flex-row">
+                            <input type="text" id="offsetInput" placeholder="000000">
+                            <button id="btnGo">Go</button>
+                        </div>
+                    </div>
                 </div>
-                
-                <h3>Navigation</h3>
-                <div class="input-group">
-                    <label>Go to Offset (Hex):</label>
-                    <input type="text" id="offsetInput" placeholder="000000">
-                    <button id="btnGo">Go</button>
+
+                <div class="panel inspector">
+                    <h3>Data Inspector</h3>
+                    <div class="inspector-grid">
+                        <label>u8:</label> <span id="val-u8">-</span>
+                        <label>u16:</label> <span id="val-u16">-</span>
+                        <label>u32:</label> <span id="val-u32">-</span>
+                        <label>Hex:</label> <span id="val-hex">-</span>
+                        <label>Bin:</label> <span id="val-bin">-</span>
+                    </div>
+                    <div class="pointer-check">
+                        <label>Pointer?</label> <span id="val-ptr" class="ptr-link">-</span>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>ROM Info</h3>
+                    <div id="romInfo" class="info-text">No ROM loaded</div>
                 </div>
             </aside>
 
             <main class="hex-view">
                 <div class="hex-header">
-                    <span>Offset</span>
-                    <span>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
-                    <span>Text</span>
+                    <span class="hdr-offset">Offset</span>
+                    <span class="hdr-bytes">00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
+                    <span class="hdr-text">Text</span>
                 </div>
-                <div id="hexGrid" class="hex-grid">
-                    </div>
+                <div id="hexGrid" class="hex-grid"></div>
             </main>
         </div>
     </div>
