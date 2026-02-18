@@ -2,7 +2,7 @@ import { Utils } from './utils.js';
 
 export class RomHandler {
     constructor() {
-        this.data = null; // Uint8Array
+        this.data = null; 
         this.filename = "rom.gba";
     }
 
@@ -11,34 +11,42 @@ export class RomHandler {
         this.filename = name;
     }
 
-    // Read bytes at a specific offset
     readBytes(offset, length) {
         if (!this.data) return [];
         return this.data.subarray(offset, offset + length);
     }
 
-    // Write a byte
     writeByte(offset, value) {
         if (this.data && offset < this.data.length) {
             this.data[offset] = value;
         }
     }
 
-    // Get ROM Header info (Pokemon Game Code is usually at 0xAC)
     getHeaderInfo() {
         if (!this.data) return null;
-        
-        // Game Title is at 0xA0 (12 bytes)
-        let titleBytes = this.readBytes(0xA0, 12);
         let title = "";
-        for(let b of titleBytes) title += String.fromCharCode(b);
-
-        // Game Code is at 0xAC (4 bytes) - e.g., BPRE for FireRed
-        let codeBytes = this.readBytes(0xAC, 4);
+        for(let i=0xA0; i<0xAC; i++) title += String.fromCharCode(this.data[i]);
         let code = "";
-        for(let b of codeBytes) code += String.fromCharCode(b);
-
+        for(let i=0xAC; i<0xB0; i++) code += String.fromCharCode(this.data[i]);
         return { title, code };
+    }
+
+    // New: Search for a byte sequence
+    find(byteSequence, startOffset = 0) {
+        if (!this.data || byteSequence.length === 0) return -1;
+        
+        // Simple linear search (Performance warning on large ROMs!)
+        for (let i = startOffset; i < this.data.length - byteSequence.length; i++) {
+            let match = true;
+            for (let j = 0; j < byteSequence.length; j++) {
+                if (this.data[i + j] !== byteSequence[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) return i;
+        }
+        return -1;
     }
 
     download() {
