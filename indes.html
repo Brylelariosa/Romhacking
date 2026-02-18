@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebHexManiac Lite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="toolbar">
+            <div class="brand">WebHexManiac</div>
+            <input type="file" id="fileInput" accept=".gba" class="hidden">
+            <button id="btnLoad">Open ROM</button>
+            <button id="btnSave" disabled>Save ROM</button>
+            <span id="statusText">No ROM loaded</span>
+        </header>
+
+        <div class="workspace">
+            <aside class="sidebar">
+                <h3>ROM Info</h3>
+                <div id="romInfo">
+                    <p>Load a ROM to see details.</p>
+                </div>
+                
+                <h3>Navigation</h3>
+                <div class="input-group">
+                    <label>Go to Offset (Hex):</label>
+                    <input type="text" id="offsetInput" placeholder="000000">
+                    <button id="btnGo">Go</button>
+                </div>
+            </aside>
+
+            <main class="hex-view">
+                <div class="hex-header">
+                    <span>Offset</span>
+                    <span>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
+                    <span>Text</span>
+                </div>
+                <div id="hexGrid" class="hex-grid">
+                    </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
