@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebHexManiac</title>
+    <title>WebHexManiac Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,98 +13,92 @@
             <div class="brand">HMA Web</div>
             <div class="file-controls">
                 <input type="file" id="fileInput" accept=".gba" class="hidden">
-                <button id="btnLoad">📂 Open</button>
+                <button id="btnLoad">📂 Open ROM</button>
                 <button id="btnSave" disabled>💾 Save</button>
             </div>
-            <select id="bookmarkSelect" disabled>
-                <option value="">-- Jump to... --</option>
-            </select>
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search Hex...">
-                <button id="btnSearch">🔍</button>
+            
+            <div class="mode-switch">
+                <button id="tabHex" class="active">Hex View</button>
+                <button id="tabPoke">Pokemon Editor</button>
             </div>
         </header>
 
         <div class="workspace">
-            <aside class="sidebar">
-                <div class="panel edit-panel">
-                    <h3>Editor</h3>
-                    <div class="flex-col">
-                        <label>Current Offset: <span id="lblOffset" style="color:var(--accent)">-</span></label>
+            
+            <div id="viewHex" class="view-panel active-view">
+                <aside class="sidebar">
+                    <div class="panel">
+                        <h3>Navigation</h3>
                         <div class="flex-row">
-                            <input type="text" id="byteInput" maxlength="2" placeholder="FF">
-                            <button id="btnWrite">Set</button>
+                            <input type="text" id="offsetInput" placeholder="Offset">
+                            <button id="btnGo">Go</button>
                         </div>
-                        <small style="color: #666">Press Enter to set</small>
                     </div>
-                </div>
+                    <div class="panel inspector">
+                        <h3>Inspector</h3>
+                        <div class="inspector-grid">
+                            <label>u8:</label> <span id="val-u8">-</span>
+                            <label>Hex:</label> <span id="val-hex">-</span>
+                        </div>
+                    </div>
+                </aside>
+                <main class="hex-view">
+                    <div class="hex-header">
+                        <span class="hdr-offset">Offset</span>
+                        <span class="hdr-bytes">00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
+                        <span class="hdr-text">ASCII</span>
+                    </div>
+                    <div id="hexGrid" class="hex-grid"></div>
+                </main>
+            </div>
 
-                <div class="panel inspector">
-                    <h3>Data Inspector</h3>
-                    <div class="inspector-grid">
-                        <label>u8:</label> <span id="val-u8">-</span>
-                        <label>u16:</label> <span id="val-u16">-</span>
-                        <label>u32:</label> <span id="val-u32">-</span>
-                        <label>Ptr:</label> <span id="val-ptr" class="ptr-link">-</span>
+            <div id="viewPoke" class="view-panel hidden">
+                <aside class="sidebar list-sidebar">
+                    <div class="panel">
+                        <h3>Select Pokemon</h3>
+                        <div class="flex-row">
+                            <button id="btnPrevPk">&lt;</button>
+                            <input type="number" id="pokeIdInput" value="1" min="1" max="386">
+                            <button id="btnNextPk">&gt;</button>
+                        </div>
                     </div>
-                </div>
+                    <div class="poke-preview">
+                        <img id="pokeSprite" src="" alt="Sprite" width="96" height="96">
+                        <h2 id="pokeNameDisplay">Bulbasaur</h2>
+                    </div>
+                </aside>
                 
-                <div class="panel">
-                    <h3>Text Decoder</h3>
-                    <div id="textPreview" class="text-box">Select bytes...</div>
-                </div>
-
-                <div class="panel">
-                    <h3>Navigation</h3>
-                    <div class="flex-row">
-                        <input type="text" id="offsetInput" placeholder="Go to...">
-                        <button id="btnGo">Go</button>
+                <main class="editor-form">
+                    <div class="form-group">
+                        <h3>Base Stats</h3>
+                        <div class="stat-grid">
+                            <label>HP</label> <input type="number" id="pkHP" class="stat-input">
+                            <label>Attack</label> <input type="number" id="pkAtk" class="stat-input">
+                            <label>Defense</label> <input type="number" id="pkDef" class="stat-input">
+                            <label>Speed</label> <input type="number" id="pkSpd" class="stat-input">
+                            <label>Sp. Atk</label> <input type="number" id="pkSpA" class="stat-input">
+                            <label>Sp. Def</label> <input type="number" id="pkSpD" class="stat-input">
+                        </div>
                     </div>
-                </div>
-            </aside>
 
-            <main class="hex-view">
-                <div class="hex-header">
-                    <span class="hdr-offset">Offset</span>
-                    <span class="hdr-bytes">00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
-                    <span class="hdr-text">ASCII</span>
-                </div>
-                <div id="hexGrid" class="hex-grid"></div>
-            </main>
-        </div>
-    </div>
-
-    <script type="module" src="js/main.js"></script>
-</body>
-</html>
-                <div class="panel inspector">
-                    <h3>Data Inspector</h3>
-                    <div class="inspector-grid">
-                        <label>u8:</label> <span id="val-u8">-</span>
-                        <label>u16:</label> <span id="val-u16">-</span>
-                        <label>u32:</label> <span id="val-u32">-</span>
-                        <label>Hex:</label> <span id="val-hex">-</span>
-                        <label>Bin:</label> <span id="val-bin">-</span>
+                    <div class="form-group">
+                        <h3>Types</h3>
+                        <div class="flex-row">
+                            <select id="pkType1"></select>
+                            <select id="pkType2"></select>
+                        </div>
                     </div>
-                    <div class="pointer-check">
-                        <label>Pointer?</label> <span id="val-ptr" class="ptr-link">-</span>
+
+                    <div class="form-group">
+                        <button id="btnApplyPoke" class="big-btn">Apply Changes</button>
                     </div>
-                </div>
+                    
+                    <div class="debug-info">
+                        Hex Offset: <span id="pkOffsetDisplay">-</span>
+                    </div>
+                </main>
+            </div>
 
-                <div class="panel">
-                    <h3>ROM Info</h3>
-                    <div id="romInfo" class="info-text">No ROM loaded</div>
-                </div>
-            </aside>
-
-            <main class="hex-view">
-                <div class="hex-header">
-                    <span class="hdr-offset">Offset</span>
-                    <span class="hdr-bytes">00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
-                    <span class="hdr-text">Text</span>
-                </div>
-                <div id="hexGrid" class="hex-grid"></div>
-            </main>
         </div>
     </div>
 
