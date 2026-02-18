@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebHexManiac Pro</title>
+    <title>WebHexManiac</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,25 +16,67 @@
                 <button id="btnLoad">📂 Open</button>
                 <button id="btnSave" disabled>💾 Save</button>
             </div>
+            <select id="bookmarkSelect" disabled>
+                <option value="">-- Jump to... --</option>
+            </select>
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search Hex (e.g. 00 A2 FF)">
+                <input type="text" id="searchInput" placeholder="Search Hex...">
                 <button id="btnSearch">🔍</button>
             </div>
         </header>
 
         <div class="workspace">
             <aside class="sidebar">
-                <div class="panel">
-                    <h3>Navigation</h3>
-                    <div class="input-group">
-                        <label>Go to Offset:</label>
+                <div class="panel edit-panel">
+                    <h3>Editor</h3>
+                    <div class="flex-col">
+                        <label>Current Offset: <span id="lblOffset" style="color:var(--accent)">-</span></label>
                         <div class="flex-row">
-                            <input type="text" id="offsetInput" placeholder="000000">
-                            <button id="btnGo">Go</button>
+                            <input type="text" id="byteInput" maxlength="2" placeholder="FF">
+                            <button id="btnWrite">Set</button>
                         </div>
+                        <small style="color: #666">Press Enter to set</small>
                     </div>
                 </div>
 
+                <div class="panel inspector">
+                    <h3>Data Inspector</h3>
+                    <div class="inspector-grid">
+                        <label>u8:</label> <span id="val-u8">-</span>
+                        <label>u16:</label> <span id="val-u16">-</span>
+                        <label>u32:</label> <span id="val-u32">-</span>
+                        <label>Ptr:</label> <span id="val-ptr" class="ptr-link">-</span>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <h3>Text Decoder</h3>
+                    <div id="textPreview" class="text-box">Select bytes...</div>
+                </div>
+
+                <div class="panel">
+                    <h3>Navigation</h3>
+                    <div class="flex-row">
+                        <input type="text" id="offsetInput" placeholder="Go to...">
+                        <button id="btnGo">Go</button>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="hex-view">
+                <div class="hex-header">
+                    <span class="hdr-offset">Offset</span>
+                    <span class="hdr-bytes">00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</span>
+                    <span class="hdr-text">ASCII</span>
+                </div>
+                <div id="hexGrid" class="hex-grid"></div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
                 <div class="panel inspector">
                     <h3>Data Inspector</h3>
                     <div class="inspector-grid">
